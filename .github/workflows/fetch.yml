@@ -31,6 +31,3 @@ jobs:
           git commit -m "Update data.json"
           git push
 
-        - name: Install dependencies
-          run: npm install
-
