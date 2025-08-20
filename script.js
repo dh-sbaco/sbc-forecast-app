@@ -49,4 +49,27 @@ fetch(`https://api.weather.gov/points/${scorpionLat},${scorpionLon}`)
   .catch(() => {
     document.getElementById("airTempForecastCard").innerText = "Air temp forecast unavailable.";
   });
+function triggerRefresh() {
+  const token = "YOUR_GITHUB_PAT"; // replace securely if needed
+
+  fetch("https://api.github.com/repos/YOUR_USERNAME/sbc-forecast-app/actions/workflows/fetch.yml/dispatches", {
+    method: "POST",
+    headers: {
+      "Accept": "application/vnd.github.v3+json",
+      "Authorization": `token ${token}`
+    },
+    body: JSON.stringify({
+      ref: "main"
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        alert("✔ Refresh triggered! Check back in 1–2 minutes.");
+      } else {
+        alert("❌ Failed to trigger. Check GitHub token and repo setup.");
+        console.error(res);
+      }
+    });
+}
+
 
