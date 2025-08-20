@@ -1,0 +1,7 @@
+{
+  "name": "sbc-forecast-app",
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
