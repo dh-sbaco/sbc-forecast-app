@@ -31,49 +31,4 @@
   <script src="script.js"></script>
 </body>
 </html>
-fetch("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=today&range=24&station=9411340&product=predictions&datum=MLLW&units=english&time_zone=lst_ldt&format=json")
-  .then(res => res.json())
-  .then(data => {
-    const times = [];
-    const heights = [];
-
-    data.predictions.forEach(p => {
-      const t = new Date(p.t);
-      times.push(t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
-      heights.push(parseFloat(p.v));
-    });
-
-    const ctx = document.getElementById("tideChartCanvas").getContext("2d");
-    new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: times,
-        datasets: [{
-          label: "Tide Height (ft)",
-          data: heights,
-          fill: true,
-          tension: 0.3,
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: {
-            beginAtZero: false,
-            title: { display: true, text: "Height (ft)" }
-          },
-          x: {
-            title: { display: true, text: "Time (Today)" }
-          }
-        }
-      }
-    });
-  })
-  .catch(() => {
-    document.getElementById("tideChartCanvas").parentElement.innerHTML = "Tide chart unavailable.";
-  });
 
