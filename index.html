@@ -5,6 +5,7 @@
   <title>Santa Barbara Channel Forecast</title>
   <link rel="stylesheet" href="style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <h1>Santa Barbara Channel Forecast</h1>
@@ -22,7 +23,57 @@
       <iframe id="tideChart" style="width: 100%; height: 300px; border: none;"
         src="https://tidesandcurrents.noaa.gov/quicklook/charts/9411340.svg"></iframe>
     </div>
+    <div class="card" style="flex: 1 1 100%;">
+  <canvas id="tideChartCanvas" height="300"></canvas>
+</div>
+
   </div>
   <script src="script.js"></script>
 </body>
 </html>
+fetch("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=today&range=24&station=9411340&product=predictions&datum=MLLW&units=english&time_zone=lst_ldt&format=json")
+  .then(res => res.json())
+  .then(data => {
+    const times = [];
+    const heights = [];
+
+    data.predictions.forEach(p => {
+      const t = new Date(p.t);
+      times.push(t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
+      heights.push(parseFloat(p.v));
+    });
+
+    const ctx = document.getElementById("tideChartCanvas").getContext("2d");
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: times,
+        datasets: [{
+          label: "Tide Height (ft)",
+          data: heights,
+          fill: true,
+          tension: 0.3,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: { display: true, text: "Height (ft)" }
+          },
+          x: {
+            title: { display: true, text: "Time (Today)" }
+          }
+        }
+      }
+    });
+  })
+  .catch(() => {
+    document.getElementById("tideChartCanvas").parentElement.innerHTML = "Tide chart unavailable.";
+  });
+
