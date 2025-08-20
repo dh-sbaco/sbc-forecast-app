@@ -1,0 +1,39 @@
+body {
+  font-family: sans-serif;
+  background: #eef4f8;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+h1 {
+  color: #003366;
+  font-size: 1.8em;
+}
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 280px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .card {
+    width: 100%;
+    font-size: 1em;
+  }
+}
+iframe {
+  width: 100%;
+  max-width: 100%;
+}
