@@ -47,7 +47,31 @@ async function main() {
         maxSwellHeight = Math.max(maxSwellHeight, parseInt(swellMatch[1]));
         maxSwellPeriod = Math.max(maxSwellPeriod, parseInt(swellMatch[2]));
       }
-    }
+    // Scorpion Ranch Air Temp Forecast
+try {
+  const airLat = 34.049548;
+  const airLon = -119.556973;
+
+  const gridUrl = await fetch(`https://api.weather.gov/points/${airLat},${airLon}`)
+    .then(res => res.json())
+    .then(data => data.properties.forecastHourly);
+
+  const hourlyData = await fetch(gridUrl).then(res => res.json());
+  const periods = hourlyData.properties.periods;
+
+  const topTemps = periods
+    .filter(p => p.temperatureUnit === "F")
+    .slice(0, 6)
+    .map(p => ({
+      time: p.startTime,
+      temp: p.temperature
+    }));
+
+  result.airForecast = topTemps;
+} catch (e) {
+  console.error("Air temp forecast error:", e);
+}
+}
 
     result.forecast = {
       maxWind,
