@@ -23,3 +23,30 @@ fetch("https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=toda
   .catch(err => {
     document.getElementById("tideList").innerText = "Tide data unavailable.";
   });
+const scorpionLat = 34.049548;
+const scorpionLon = -119.556973;
+
+fetch(`https://api.weather.gov/points/${scorpionLat},${scorpionLon}`)
+  .then(res => res.json())
+  .then(data => fetch(data.properties.forecastHourly))
+  .then(res => res.json())
+  .then(data => {
+    const periods = data.properties.periods;
+    const forecastRows = periods
+      .filter(p => p.isDaytime && p.temperatureUnit === "F")
+      .slice(0, 6) // 6 entries (~18 hours)
+      .map(p => `<tr><td>${p.startTime.slice(11, 16)}</td><td>${p.temperature}°F</td></tr>`)
+      .join("");
+
+    document.getElementById("airTempForecastCard").innerHTML = `
+      <strong>Forecast Max Air Temps (Scorpion)</strong>
+      <table style="width: 100%; margin-top: 10px;">
+        <thead><tr><th>Time</th><th>Temp</th></tr></thead>
+        <tbody>${forecastRows}</tbody>
+      </table>
+    `;
+  })
+  .catch(() => {
+    document.getElementById("airTempForecastCard").innerText = "Air temp forecast unavailable.";
+  });
+
